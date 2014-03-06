@@ -1,5 +1,7 @@
-(ns quil.examples.gen-art.04-fading-horizontal-lines
-  (:use quil.core))
+(ns quil.examples.gen-art.fading-horizontal-lines
+  (:use quil.core)
+  (:require [clojure.core.typed :as t]
+            [quil.typed :as qt]))
 
 ;; Example 4 - Fading Horizontal Lines
 ;; Taken from Section 2.4.3, p 39
@@ -17,6 +19,7 @@
 ;;   }
 ;; }
 
+(t/ann draw-line [Number -> Any])
 (defn draw-line
   "Draws a horizontal line on the canvas at height h"
   [h]
@@ -25,6 +28,7 @@
   (stroke 255 h)
   (line 10 (+ h 4) (- (width) 20) (+ h 4)))
 
+(t/ann setup [-> Any])
 (defn setup []
   (background 180)
   (stroke-weight 4)
@@ -32,6 +36,7 @@
   (let [line-heights (range 10 (- (height) 15) 10)]
     (dorun (map draw-line line-heights))))
 
+(qt/ann-sketch example-4)
 (defsketch example-4
   :title "Fading Horizontal Lines"
   :setup setup

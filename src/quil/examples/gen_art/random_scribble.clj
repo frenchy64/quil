@@ -1,7 +1,9 @@
-(ns quil.examples.gen-art.05-random-scribble
+(ns quil.examples.gen-art.random-scribble
   (:use quil.core
         [quil.helpers.seqs :only [range-incl]]
-        [quil.helpers.drawing :only [line-join-points]]))
+        [quil.helpers.drawing :only [line-join-points]])
+  (:require [clojure.core.typed :as t]
+            [quil.typed :as qt]))
 
 ;; Example 5 - Random Scribble
 ;; Taken from Section 3.2, p55
@@ -31,10 +33,12 @@
 ;;   }
 ;; }
 
+(t/ann rand-y [Number -> Number])
 (defn rand-y
   [border-y]
   (+ border-y (rand (- (height) (* 2 border-y)))))
 
+(t/ann setup [-> Any])
 (defn setup []
   (background 255)
   (stroke-weight 5)
@@ -49,9 +53,12 @@
         xs        (range-incl border-x (- (width) border-x) step)
         ys        (repeatedly #(rand-y border-y))
         line-args (line-join-points xs ys)]
-    (dorun (map #(apply line %) line-args))))
+    ; FIXME apply probably needs to be smarter here
+    (t/tc-ignore
+      (dorun (map #(apply line %) line-args)))))
 
 
+(qt/ann-sketch example-5)
 (defsketch example-5
   :title "Random Scribble"
   :setup setup

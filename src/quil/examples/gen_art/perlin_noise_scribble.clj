@@ -1,8 +1,10 @@
-(ns quil.examples.gen-art.07-perlin-noise-scribble
+(ns quil.examples.gen-art.perlin-noise-scribble
   (:use quil.core
         [quil.helpers.drawing :only [line-join-points]]
         [quil.helpers.seqs :only [range-incl perlin-noise-seq]]
-        [quil.helpers.calc :only [mul-add]]))
+        [quil.helpers.calc :only [mul-add]])
+  (:require [clojure.core.typed :as t]
+            [quil.typed :as qt]))
 
 ;; Example 7 - Perlin Noise Scribblea
 ;; Taken from Listing 3.1, p59
@@ -33,6 +35,7 @@
 ;;  }
 ;; }
 
+(t/ann setup [-> Any])
 (defn setup []
   (background 255)
   (stroke-weight 5)
@@ -52,8 +55,10 @@
         ys        (perlin-noise-seq seed seed-incr)
         scaled-ys (mul-add ys y-mul y-add)
         line-args (line-join-points xs scaled-ys)]
-    (dorun (map #(apply line %) line-args))))
+    (t/tc-ignore
+      (dorun (map #(apply line %) line-args)))))
 
+(qt/ann-sketch gen-art-7)
 (defsketch gen-art-7
   :title "Perlin Noise Scribble"
   :setup setup

@@ -1,19 +1,24 @@
 (ns
-    ^{:doc "Wrappers and extensions around the core Processing.org API."
-      :author "Roland Sadowski, Sam Aaron"}
-    quil.core
-    (:import [processing.core PApplet PImage PGraphics PFont PConstants PShape]
-             [java.awt.event KeyEvent])
-  (:require [clojure.set])
+  ^{:doc "Wrappers and extensions around the core Processing.org API."
+    :author "Roland Sadowski, Sam Aaron"
+    :core.typed {:collect-only true}}
+  quil.core
+  (:import [processing.core PApplet PImage PGraphics PFont PConstants PShape]
+           [java.awt.event KeyEvent])
+  (:require [clojure.set]
+            [clojure.core.typed :as t])
   (:use [quil.version :only [QUIL-VERSION-STR]]
         [quil.util :only [int-like? resolve-constant-key length-of-longest-key gen-padding print-definition-list]]
-        [quil.applet :only [current-applet applet-stop applet-state applet-start applet-close applet defapplet applet-safe-exit current-graphics *graphics*]]))
+        [quil.applet :only [current-applet applet-stop applet-state applet-start applet-close 
+                            applet defapplet applet-safe-exit current-graphics *graphics*]]))
 
+(t/ann current-surface [-> PGraphics])
 (defn- ^PGraphics current-surface
   "Retrieves current drawing surface. It's either current graphics or current applet if graphics is nil"
   []
   (or (current-graphics) (.-g (current-applet))))
 
+(t/ann state [Any -> Any])
 (defn
   ^{:requires-bindings true
     :category "State"
@@ -35,6 +40,7 @@
         (throw (Exception. (str "Unable to find state with key: " key))))
       (get state key))))
 
+(t/ann set-state! [Any * -> Any])
 (defn
   ^{:requires-bindings true
     :category "State"
@@ -52,6 +58,7 @@
       (let [state-map (apply hash-map state-vals)]
         (reset! state* state-map)))))
 
+(t/ann abs-int [Number -> Number])
 (defn
   ^{:requires-bindings false
     :processing-name "abs()"
@@ -64,6 +71,7 @@
   [n]
   (PApplet/abs (int n)))
 
+(t/ann abs-float [Number -> Number])
 (defn
   ^{:requires-bindings false
     :processing-name "abs()"
@@ -76,6 +84,7 @@
   [n]
   (PApplet/abs (float n)))
 
+(t/ann abs [Number -> Number])
 (defn
   ^{:requires-bindings false
     :processing-name "abs()"
@@ -91,6 +100,7 @@
       (abs-int n)
       (abs-float n)))
 
+(t/ann acos [Number -> Number])
 (defn
   ^{:requires-bindings false
     :processing-name "acos()"
@@ -104,6 +114,7 @@
   [n]
   (PApplet/acos (float n)))
 
+(t/ann alpha [Number -> Number])
 (defn
   ^{:requires-bindings true
     :processing-name "alpha()"
@@ -115,6 +126,8 @@
   [color]
   (.alpha (current-surface) (int color)))
 
+(t/ann ambient-float (Fn [Number -> Number]
+                         [Number Number Number -> Number]))
 (defn
   ^{:requires-bindings true
     :processing-name "ambient()"
@@ -132,6 +145,7 @@
   ([gray] (.ambient (current-surface) (float gray)))
   ([x y z] (.ambient (current-surface) (float x) (float y) (float z))))
 
+(t/ann ambient-int [Number -> Number])
 (defn
   ^{:requires-bindings true
     :processing-name "ambient()"
@@ -148,6 +162,8 @@
   (.ambient
    (current-surface) (int rgb)))
 
+(t/ann ambient (Fn [Number -> Number]
+                   [Number Number Number -> Number]))
 (defn
   ^{:requires-bindings true
     :processing-name "ambient()"
@@ -165,6 +181,8 @@
   ([rgb] (if (int-like? rgb) (ambient-int rgb) (ambient-float rgb)))
   ([x y z] (ambient-float x y z)))
 
+(t/ann ambient-light (Fn [Number Number Number -> Number]
+                         [Number Number Number Number Number Number -> Number]))
 (defn
   ^{:requires-bindings true
     :processing-name "ambientLight()"
@@ -186,6 +204,11 @@
      (.ambientLight (current-surface) (float red) (float green) (float blue)
                     (float x) (float y) (float z))))
 
+(t/ann apply-matrix (Fn [Number Number Number Number Number Number -> Any]
+                        [Number Number Number Number 
+                         Number Number Number Number 
+                         Number Number Number Number 
+                         Number Number Number Number -> Any]))
 (defn
   ^{:requires-bindings true
     :processing-name "applyMatrix()"

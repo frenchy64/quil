@@ -1,8 +1,10 @@
-(ns quil.examples.gen-art.09-sine-wave-with-noise
+(ns quil.examples.gen-art.sine-wave-with-noise
   (:use quil.core
         [quil.helpers.drawing :only [line-join-points]]
         [quil.helpers.seqs :only [range-incl]]
-        [quil.helpers.calc :only [mul-add]]))
+        [quil.helpers.calc :only [mul-add]])
+  (:require [quil.typed :as qt]
+            [clojure.core.typed :as t]))
 
 ;; Example 9 - Sine Wave with Noise
 ;; Taken from Listing 3.2, p60
@@ -34,6 +36,7 @@
 ;; }
 
 
+(t/ann setup [-> Any])
 (defn setup []
   (background 255)
   (stroke-weight 5)
@@ -45,13 +48,18 @@
   (let [xs        (range-incl 20 480 1)
         rads      (map radians (range))
         ys        (map sin rads)
-        ys        (map #(pow % 3) ys)
-        ys        (map (fn [y rad] (* 30 y (noise (* 2 rad)))) ys rads)
+        ys        (map (t/ann-form #(pow % 3) [Number -> Number]) 
+                       ys)
+        ys        (map (t/ann-form (fn [y rad] (* 30 y (noise (* 2 rad))))
+                                   [Number Number -> Number]) 
+                       ys rads)
         scaled-ys (mul-add ys 1 50)
 
         line-args (line-join-points xs scaled-ys)]
-    (dorun (map #(apply line %) line-args))))
+    (t/tc-ignore
+      (dorun (map #(apply line %) line-args)))))
 
+(qt/ann-sketch gen-art-9)
 (defsketch gen-art-9
   :title "Sine Wave with Noise"
   :setup setup

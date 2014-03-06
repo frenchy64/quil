@@ -1,7 +1,9 @@
-(ns quil.examples.gen-art.06-rand-walk-scribble
+(ns quil.examples.gen-art.rand-walk-scribble
   (:use quil.core
         [quil.helpers.drawing :only [line-join-points]]
-        [quil.helpers.seqs :only [range-incl]]))
+        [quil.helpers.seqs :only [range-incl]])
+  (:require [clojure.core.typed :as t]
+            [quil.typed :as qt]))
 
 ;; Example 6 - Random Walk Scribble
 ;; Taken from Section 3.2, p56
@@ -31,10 +33,12 @@
 ;;   }
 ;; }
 
+(t/ann rand-walk-ys [Number -> (t/Seq Number)])
 (defn rand-walk-ys
   [seed]
   (lazy-seq (cons seed (rand-walk-ys (+ seed (- (rand 20) 10))))))
 
+(t/ann setup [-> Any])
 (defn setup []
   (background 255)
   (stroke-weight 5)
@@ -48,8 +52,10 @@
         xs        (range-incl border-x (- (width) border-x) step)
         ys        (rand-walk-ys (/ (height) 2))
         line-args (line-join-points xs ys)]
-    (dorun (map #(apply line %) line-args))))
+    (t/tc-ignore
+      (dorun (map #(apply line %) line-args)))))
 
+(qt/ann-sketch gen-art-6)
 (defsketch gen-art-6
   :title "Random Walk Scribble"
   :setup setup

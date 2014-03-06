@@ -1,5 +1,7 @@
 (ns quil.examples.gen-art.cross-with-circle
-  (:use quil.core))
+  (:use quil.core)
+  (:require [clojure.core.typed :as t]
+            [quil.typed :as qt]))
 
 ;; Example 1 - Cross with Circle
 ;; Taken from Section 2.2.1, p20
@@ -16,6 +18,7 @@
 ;; fill(255, 150);
 ;; ellipse(width/2, height/2, 50, 50);
 
+(t/ann setup [-> Any])
 (defn setup []
   (smooth)
   (background 230 230 230)
@@ -35,6 +38,7 @@
     (fill 255 150)
     (ellipse canvas-x-center canvas-y-center circ-size circ-size)))
 
+(qt/ann-sketch gen-art-1)
 (defsketch gen-art-1
   :title "Cross with circle"
   :setup setup

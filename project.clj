@@ -1,4 +1,4 @@
-(defproject quil "1.7.0"
+(defproject quil "1.7.1-typed-SNAPSHOT"
   :description "(mix Processing Clojure)"
   :url "http://github.com/quil/quil"
   :mailing-list {:name "Quil Mailing List"
@@ -12,5 +12,7 @@
                  [org.clojars.processing-core/org.processing.jogl "1.5.1"]
                  [org.clojars.processing-core/org.processing.opengl "1.5.1"]
                  [org.clojars.processing-core/org.processing.itext "1.5.1"]
-                 [org.clojars.processing-core/org.processing.pdf "1.5.1"]]
+                 [org.clojars.processing-core/org.processing.pdf "1.5.1"]
+                 [org.clojure/core.typed "0.2.35-SNAPSHOT"]]
+  :profiles {:dev {:repl-options {:port 64481}}}
   :aot [quil.applet])

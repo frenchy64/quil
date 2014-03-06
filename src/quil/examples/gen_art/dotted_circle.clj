@@ -1,7 +1,9 @@
-(ns quil.examples.gen-art.11-dotted-circle
+(ns quil.examples.gen-art.dotted-circle
   (:use quil.core
         [quil.helpers.drawing :only [line-join-points]]
-        [quil.helpers.seqs :only [range-incl]]))
+        [quil.helpers.seqs :only [range-incl]])
+  (:require [quil.typed :as qt]
+            [clojure.core.typed :as t]))
 
 ;; Example 11 - Dotted Circle
 ;; Taken from Listing 4.1, p68
@@ -29,6 +31,7 @@
 ;;   }
 ;; }
 
+(t/ann setup [-> Any])
 (defn setup []
   (background 255)
   (stroke-weight 5)
@@ -37,14 +40,19 @@
         cent-x    250
         cent-y    150
         rads      (map radians (range-incl 0 360 5))
-        xs        (map #(+ cent-x (* radius (cos %))) rads)
-        ys        (map #(+ cent-y (* radius (sin %))) rads)]
+        xs        (map (ann-form #(+ cent-x (* radius (cos %)))
+                                 [Number -> Number])
+                       rads)
+        ys        (map (ann-form #(+ cent-y (* radius (sin %)))
+                                 [Number -> Number]) 
+                       rads)]
     (stroke 0 30)
     (no-fill)
     (ellipse cent-x cent-y (* radius 2) (* radius 2))
     (stroke 20 50 70)
     (dorun (map point xs ys))))
 
+(qt/ann-sketch gen-art-11)
 (defsketch gen-art-11
   :title "Dotted Circle"
   :setup setup
