@@ -1,4 +1,70 @@
 (ns quil.typed
+  "Parent namespace for core.typed Quil usage.
+
+  For working examples of using `quil.typed`, see `quil.typed.examples.*`.
+
+  This namespace contains static type annotations, convenience macros and enhanced
+  type checked operations for Quil.
+
+  This namespace should be required as usual to trigger annotations
+  to be loaded.
+
+  eg. (ns my.ns 
+        (:require 
+          [clojure.core.typed :as t]
+          [quil.typed :as qt]))
+
+  # Notes on Annotations
+
+  This file should be used as the reference for the type annotations core.typed
+  assigns to quil operations.
+
+  In almost all cases, the return type of a function is useless, so an `Any`
+  return type is common.
+
+  # Convenience macros
+
+  ## `ann-sketch`
+
+  Each call to `defsketch` must be accompanied by a call to `ann-sketch`.
+
+  eg.  (qt/ann-sketch gen-art-1)
+       (defsketch gen-art-1
+         :title \"Cross with circle\"
+         :setup setup
+         :size [500 300])
+
+  # Enhanced Operations
+
+  ## `quil.typed/set-state!`
+
+  Replacement for `quil.core/set-state!`. 
+  
+  The user must provide an expected static type as the first argument, 
+  which the rest of the keyword arguments to `set-state!` will be checked against.
+
+  eg. (qt/set-state! '{:a Number :b Boolean}
+        :a 1
+        :b true)
+
+  ## `quil.typed/state`
+
+  Replacement for `quil.core/state`.
+
+  The user must provide a 'trusted' static type representing the current sketch's state.
+  This *must* match the annotations given any relevant calls to `set-state!`, as core.typed
+  will simply assume the provided type is correct.
+
+  If possible, core.typed will infer an accurate type for the result of the state lookup.
+
+  `quil.typed/state` does not throw a static type error on non-existant keys. This will result
+  a runtime error: exactly the same behaviour as `quil.core/state`.
+
+  eg. (qt/state '{:a Number :b Boolean}
+        :a)
+      ;=> ? : Number
+  
+  "
   (:require [clojure.core.typed :as t :refer [Num]]
             [clojure.core.typed.unsafe :as unsafe]
             [quil.core]))
