@@ -13,7 +13,7 @@
                  [org.clojars.processing-core/org.processing.opengl "1.5.1"]
                  [org.clojars.processing-core/org.processing.itext "1.5.1"]
                  [org.clojars.processing-core/org.processing.pdf "1.5.1"]
-                 [org.clojure/core.typed "0.2.35"]]
+                 [org.clojure/core.typed "0.2.39"]]
   :profiles {:dev {:repl-options {:port 64481}}}
   :repositories {"sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"}
   :aot [quil.applet])
