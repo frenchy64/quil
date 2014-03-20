@@ -1,5 +1,6 @@
 (ns quil.typed
   (:require [clojure.core.typed :as t :refer [Num]]
+            [clojure.core.typed.unsafe :as unsafe]
             [quil.core]))
 
 (t/ann ^:no-check quil.core/smooth [-> Any])
@@ -27,11 +28,35 @@
        (Fn [Number Number Number Number -> Any]))
 (t/ann ^:no-check quil.core/stroke-weight
        [Number -> Any])
+(t/ann ^:no-check quil.core/stroke-int
+       (Fn [Number -> Any]
+           [Number Number -> Any]))
 (t/ann ^:no-check quil.core/width [-> Number])
 (t/ann ^:no-check quil.core/height [-> Number])
 (t/ann ^:no-check quil.core/frame-rate [t/AnyInteger -> Any])
 (t/ann ^:no-check quil.core/no-fill [-> Any])
 (t/ann ^:no-check quil.core/no-cursor [-> Any])
+
+(t/ann ^:no-check quil.core/PI Number)
+
+(t/ann ^:no-check quil.core/curve-vertex 
+       (Fn [Number Number -> Any]
+           [Number Number Number -> Any]))
+
+(t/ann ^:no-check quil.core/point
+       (Fn [Number Number -> Any]
+           [Number Number Number -> Any]))
+
+(t/ann ^:no-check quil.core/begin-shape 
+       (Fn [-> Any]
+           [(U ':points ':lines ':triangles
+               ':triangle-fan ':triangle-strip
+               ':quads ':quad-strip)
+            -> Any]))
+
+(t/ann ^:no-check quil.core/end-shape 
+       (Fn [-> Any]
+           [':close -> Any]))
 
 (t/ann ^:no-check quil.core/stroke-cap 
        [(U ':square 
@@ -51,6 +76,11 @@
 (t/ann ^:no-check quil.core/random
        (Fn [Number -> Number]
            [Number Number -> Number]))
+(t/ann ^:no-check quil.core/rect
+       [Number Number Number Number -> Any])
+
+(t/ann ^:no-check quil.core/push-matrix [-> Any])
+;(t/ann ^:no-check quil.core/translate [-> Any])
 
 (t/ann ^:no-check quil.helpers.seqs/range-incl
        (Fn [-> (t/Seq t/AnyInteger)]
@@ -61,19 +91,31 @@
            [Number Number Number -> (t/Seq Number)]))
 (t/ann ^:no-check quil.helpers.seqs/steps
        (Fn [-> (t/Seq t/AnyInteger)]
-           [t/AnyInteger -> (t/Seq t/AnyInteger)]
-           [Number -> (t/Seq Number)]
-           [t/AnyInteger t/AnyInteger -> (t/Seq t/AnyInteger)]
-           [Number Number -> (t/Seq Number)]))
+           [(U t/AnyInteger (t/Seqable t/AnyInteger)) -> (t/Seq t/AnyInteger)]
+           [(U Number (t/Seqable Number)) -> (t/Seq Number)]
+           [t/AnyInteger (U t/AnyInteger (t/Seqable t/AnyInteger)) -> (t/Seq t/AnyInteger)]
+           [Number (U Number (t/Seqable Number)) -> (t/Seq Number)]))
 (t/ann ^:no-check quil.helpers.seqs/seq->stream
        (All [x]
             [(U nil (t/Seqable x)) -> [-> (U nil x)]]))
 (t/ann ^:no-check quil.helpers.seqs/perlin-noise-seq
        [Number Number -> (t/Seq Number)])
 
+(t/ann ^:no-check quil.helpers.seqs/cycle-between
+       (Fn [Number Number -> (t/Seq Number)]
+           [Number Number Number -> (t/Seq Number)]
+           [Number Number Number Number -> (t/Seq Number)]
+           [Number Number Number Number Number -> (t/Seq Number)]
+           [Number Number Number Number Number (U ':up ':down) -> (t/Seq Number)]))
+
 (t/ann ^:no-check quil.helpers.calc/mul-add
        (Fn [Number Number Number -> Number]
-           [(U Number (t/Seqable Number)) (U Number (t/Seqable Number)) Number -> (t/Seq Number)]))
+           ; these arities always return a Seq
+           [(t/Seqable Number) (U Number (t/Seqable Number)) (U Number (t/Seqable Number)) -> (t/Seq Number)]
+           [(U Number (t/Seqable Number)) (t/Seqable Number) (U Number (t/Seqable Number)) -> (t/Seq Number)]
+           [(U Number (t/Seqable Number)) (U Number (t/Seqable Number)) (t/Seqable Number) -> (t/Seq Number)]
+           ; default, could return Number or Seq
+           [(U Number (t/Seqable Number)) (U Number (t/Seqable Number)) (U Number (t/Seqable Number)) -> (U Number (t/Seq Number))]))
 
 (t/ann ^:no-check quil.helpers.drawing/line-join-points
        (All [[x :< Number]]
@@ -150,6 +192,6 @@
   "
   [t k]
   (assert (keyword? k))
-  `(t/unsafe-ann-form
+  `(unsafe/ignore-with-unchecked-cast
       (quil.core/state ~k)
       (~'Get ~t ~(list 'Value k))))

@@ -1,4 +1,4 @@
-(ns quil.examples.gen-art.dotted-circle
+(ns quil.typed.examples.gen-art.11-dotted-circle
   (:use quil.core
         [quil.helpers.drawing :only [line-join-points]]
         [quil.helpers.seqs :only [range-incl]])
@@ -40,11 +40,11 @@
         cent-x    250
         cent-y    150
         rads      (map radians (range-incl 0 360 5))
-        xs        (map (ann-form #(+ cent-x (* radius (cos %)))
-                                 [Number -> Number])
+        xs        (map (t/ann-form #(+ cent-x (* radius (cos %)))
+                                   [Number -> Number])
                        rads)
-        ys        (map (ann-form #(+ cent-y (* radius (sin %)))
-                                 [Number -> Number]) 
+        ys        (map (t/ann-form #(+ cent-y (* radius (sin %)))
+                                   [Number -> Number]) 
                        rads)]
     (stroke 0 30)
     (no-fill)

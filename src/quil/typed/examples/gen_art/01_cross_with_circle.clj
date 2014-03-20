@@ -1,4 +1,4 @@
-(ns quil.examples.gen-art.cross-with-circle
+(ns quil.typed.examples.gen-art.01-cross-with-circle
   (:use quil.core)
   (:require [clojure.core.typed :as t]
             [quil.typed :as qt]))
@@ -22,7 +22,7 @@
 (defn setup []
   (smooth)
   (background 230 230 230)
-  (stroke 130, 0 0)
+  (stroke 130 0 0)
   (stroke-weight 4)
   (let [cross-size      70
         circ-size       50

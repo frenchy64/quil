@@ -1,4 +1,4 @@
-(ns quil.examples.gen-art.concentric-circles
+(ns quil.typed.examples.gen-art.03-concentric-circles
   (:use quil.core)
   (:require [clojure.core.typed :as t]
             [quil.typed :as qt]))

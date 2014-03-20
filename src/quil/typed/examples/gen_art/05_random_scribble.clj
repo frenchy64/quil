@@ -1,4 +1,4 @@
-(ns quil.examples.gen-art.random-scribble
+(ns quil.typed.examples.gen-art.05-random-scribble
   (:use quil.core
         [quil.helpers.seqs :only [range-incl]]
         [quil.helpers.drawing :only [line-join-points]])

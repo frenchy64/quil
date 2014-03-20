@@ -1,4 +1,4 @@
-(ns quil.examples.gen-art.fading-horizontal-lines
+(ns quil.typed.examples.gen-art.04-fading-horizontal-lines
   (:use quil.core)
   (:require [clojure.core.typed :as t]
             [quil.typed :as qt]))

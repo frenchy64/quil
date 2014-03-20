@@ -1,4 +1,4 @@
-(ns quil.examples.gen-art.spiral
+(ns quil.typed.examples.gen-art.12-spiral
   (:use quil.core
         [quil.helpers.drawing :only [line-join-points]]
         [quil.helpers.seqs :only [range-incl steps]])

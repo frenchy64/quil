@@ -1,4 +1,4 @@
-(ns quil.examples.gen-art.growing-circle
+(ns quil.typed.examples.gen-art.02-growing-circle
   (:use quil.core
         [quil.helpers.seqs :only [seq->stream range-incl]])
   (:require [quil.typed :as qt]
@@ -31,10 +31,11 @@
 ;; }
 
 (t/def-alias GenArt2State
-  "State for gen-art2."
-  '{:diam [-> (U nil Number)]
-    :cent-x Number
-    :cent-y Number})
+  "State for gen-art-2."
+  (HMap :mandatory {:diam [-> (U nil Number)]
+                    :cent-x Number
+                    :cent-y Number}
+        :complete? false))
 
 (t/ann setup [-> Any])
 (defn setup []
@@ -45,6 +46,7 @@
   (stroke-weight 5)
   (fill 255 25)
   (let [diams (range-incl 10 400 10)]
+    (t/print-env "after diams")
     (qt/set-state! GenArt2State
       :diam (seq->stream diams)
       :cent-x (/ (width) 2)
